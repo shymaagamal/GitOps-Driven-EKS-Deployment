@@ -1,0 +1,120 @@
+---
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      when: ansible_os_family == "Debian"
+
+    - name: Install required packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+          - unzip
+          - software-properties-common
+        state: present
+        update_cache: true
+      when: ansible_os_family == "Debian"
+
+    - name: Install Node.js and npm
+      apt:
+        name:
+          - nodejs
+          - npm
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+    - name: Ensure Docker SDK for Python is installed
+      pip:
+        name: docker
+        executable: pip3
+    - name: Install Docker
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: present
+
+    - name: Start and enable Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+    - name: Ensure pip3 is installed on ubuntu
+      apt: 
+        name: python3-pip
+        state: present
+   
+
+    - name: Add user to docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: Create Docker network
+      docker_network:
+        name: "{{ docker_network }}"
+        state: present
+
+    - name: Run PostgreSQL container for SonarQube
+      docker_container:
+        name: sonarqube_db
+        image: postgres:latest
+        state: started
+        restart_policy: always
+        networks:
+          - name: "{{ docker_network }}"
+        env:
+          POSTGRES_USER: "{{ postgres_user }}"
+          POSTGRES_PASSWORD: "{{ postgres_password }}"
+          POSTGRES_DB: "{{ postgres_db }}"
+        volumes:
+          - sonarqube_db_data:/var/lib/postgresql/data
+
+    - name: Run SonarQube container
+      docker_container:
+        name: sonarqube
+        image: sonarqube:{{ sonarqube_version }}
+        state: started
+        restart_policy: always
+        ports:
+          - "{{ sonarqube_port }}:9000"
+        networks:
+          - name: "{{ docker_network }}"
+        env:
+          SONAR_JDBC_URL: "jdbc:postgresql://sonarqube_db:5432/{{ postgres_db }}"
+          SONAR_JDBC_USERNAME: "{{ postgres_user }}"
+          SONAR_JDBC_PASSWORD: "{{ postgres_password }}"
+        volumes:
+          - sonarqube_data:/opt/sonarqube/data
+          - sonarqube_logs:/opt/sonarqube/logs
+          - sonarqube_extensions:/opt/sonarqube/extensions
+
+    - name: Install SonarQube scanner
+      npm:
+        name: sonar-scanner
+        global: yes
+        state: present
+
+    - name: Ensure project directory exists
+      file:
+        path: "{{ project_dir }}"
+        state: directory
+        mode: '0755'
+
+    

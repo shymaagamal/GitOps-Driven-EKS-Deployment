@@ -1,0 +1,12 @@
+
+[jenkins-master]
+44.199.248.237
+
+
+
+[sonarQube]
+44.199.248.237  ansible_user=ubuntu
+
+[local]
+localhost ansible_connection=local
+

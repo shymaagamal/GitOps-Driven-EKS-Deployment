@@ -1,0 +1,46 @@
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install Java (OpenJDK 17)
+  apt:
+    name: openjdk-17-jdk
+    state: present
+
+- name: Import Jenkins GPG key
+  get_url:
+    url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+    dest: /usr/share/keyrings/jenkins-keyring.asc
+    mode: '0644'
+
+- name: Add Jenkins APT repository
+  apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/"
+    filename: jenkins
+    state: present
+
+- name: Update apt cache after adding Jenkins repo
+  apt:
+    update_cache: yes
+
+- name: Install Jenkins
+  apt:
+    name: jenkins
+    state: present
+
+- name: Ensure Jenkins is started and enabled
+  systemd:
+    name: jenkins
+    enabled: yes
+    state: started
+
+- name: Display initial admin password
+  command: cat /var/lib/jenkins/secrets/initialAdminPassword
+  register: admin_pass
+  changed_when: false
+
+- name: Show password
+  debug:
+    msg: "Initial Jenkins admin password: {{ admin_pass.stdout }}"    
+

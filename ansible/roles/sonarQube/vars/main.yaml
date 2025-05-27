@@ -1,0 +1,7 @@
+    project_dir: "/Application"  
+    sonarqube_version: "community"
+    sonarqube_port: "9000"
+    postgres_user: "sonar"
+    postgres_password: "sonar"
+    postgres_db: "sonar"
+    docker_network: "ci-network"
