@@ -1,11 +1,16 @@
 pipeline{
     agent any
+
     tools{
         jdk 'JDK17'
         nodejs 'node16'
     }
     environment{
         SCANNER_HOME=tool 'sonarqube-scanner'
+    }
+    options {
+        // This is required if you want to clean before build
+        skipDefaultCheckout(true)
     }
     stages{
         stage('create workspace'){
