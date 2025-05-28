@@ -8,6 +8,13 @@ pipeline {
             steps {
                 git url: 'https://github.com/shymaagamal/GitOps-Driven-EKS-Deployment.git'
             }
+            
+        }
+        stage('create workspace'){
+            steps{
+                cleanWs()
+                git url: 'https://github.com/your-repo.git', branch: 'main'
+            }
         }
 
         stage('Install Dependencies') {
