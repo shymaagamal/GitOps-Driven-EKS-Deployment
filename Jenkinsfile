@@ -13,7 +13,7 @@ pipeline {
         stage('create workspace'){
             steps{
                 cleanWs()
-                git branch: 'main', url: 'https://github.com/your-repo.git', branch: 'main'
+                git branch: 'main', url: 'https://github.com/your-repo.git'
             }
         }
 
