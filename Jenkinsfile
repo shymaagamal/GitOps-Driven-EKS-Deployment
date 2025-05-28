@@ -1,7 +1,7 @@
 pipeline{
     agent any
     tools{
-        jdk 'jdk17'
+        jdk 'JDK17'
         nodejs 'node16'
     }
     environment{
@@ -15,6 +15,7 @@ pipeline{
             }
         }
         stage('SonarQube analysis'){
+            steps{
             withSonarQubeEnv('sonarQube-Server') { 
                 sh '''${SCANNER_HOME}/bin/sonar-scanner \
                       -Dsonar.projectKey=my-node-app \
@@ -24,6 +25,7 @@ pipeline{
                       -Dsonar.host.url=http://44.199.248.237:9000 \
                       -Dsonar.token=${SONAR_TOKEN} \
                       -Dsonar.language=js'''
+            }
             }
         }
 
