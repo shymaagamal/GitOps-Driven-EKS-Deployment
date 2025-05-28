@@ -33,22 +33,18 @@ pipeline {
             }
         }
 
-        // stage('Build Docker Image') {
-        //     steps {
-        //         sh 'docker build -t myapp:latest Dockerfile/'
-        //     }
-        // }
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t myapp:latest Dockerfile/'
+            }
+        }
 
-        // stage('Trivy Scan') {
-        //     steps {
-        //         sh 'trivy image myapp:latest'
-        //     }
-        // }
+        stage('Trivy Scan') {
+            steps {
+                sh 'trivy image myapp:latest'
+            }
+        }
 
-        // stage('Run on EC2') {
-        //     steps {
-        //         sh 'docker run -d -p 80:3000 myapp:latest'
-        //     }
-        // }
+
     }
 }
