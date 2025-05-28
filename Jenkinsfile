@@ -1,10 +1,10 @@
 pipeline{
-    agents any
+    agent any
     tools{
         jdk 'jdk17'
         nodejs 'node16'
     }
-    enviroment{
+    environment{
         SCANNER_HOME=toll 'sonarqube-scanner'
     }
     stages{
