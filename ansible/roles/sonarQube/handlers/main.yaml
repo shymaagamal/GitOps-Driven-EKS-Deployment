@@ -1,6 +1,0 @@
-    - name: Restart Jenkins
-      service:
-        name: jenkins
-        state: restarted
-      when: ansible_os_family == "Debian"
-      register: jenkins_restart

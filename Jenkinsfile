@@ -1,58 +1,47 @@
-pipeline{
+pipeline {
     agent any
-
-    tools{
-        jdk 'JDK17'
-        nodejs 'node16'
+    tools {
+        nodejs 'node16' // Ensure NodeJS is configured in Jenkins
     }
-    environment{
-        SCANNER_HOME=tool 'sonarqube-scanner'
-    }
-
-    stages{
-        stage('create workspace'){
-            steps{
-                cleanWs()
-                git url: 'https://github.com/your-repo.git', branch: 'main'
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/your-org/your-repo.git'
             }
         }
-        // stage('SonarQube analysis'){
-        //     steps{
-        //     withSonarQubeEnv('sonarQube-Server') { 
-        //         sh '''${SCANNER_HOME}/bin/sonar-scanner \
-        //               -Dsonar.projectKey=my-node-app \
-        //               -Dsonar.projectName="Node App" \
-        //               -Dsonar.sources=Application \
-        //               -Dsonar.exclusions=node_modules/**,dist/** \
-        //               -Dsonar.host.url=http://44.199.248.237:9000 \
-        //               -Dsonar.token=${SONAR_TOKEN} \
-        //               -Dsonar.language=js'''
-        //     }
+
+        stage('Install Dependencies') {
+            steps {
+                dir('Application') {
+                    sh 'npm install'
+                }
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('MySonarQubeServer') {
+                    sh 'sonar-scanner'
+                }
+            }
+        }
+
+        // stage('Build Docker Image') {
+        //     steps {
+        //         sh 'docker build -t myapp:latest Dockerfile/'
         //     }
         // }
 
-        // stage("Quality Gate"){
+        // stage('Trivy Scan') {
         //     steps {
-        //          script {
-        //              waitForQualityGate abortPipeline: false, credentialsId: 'sonarQUbe-Token' 
-        //          }
-        //      } 
-        //  }
-         stage('Debug Workspace') {
-            steps {
-                sh 'pwd'
-                sh 'ls -la'
-            }
-        }
-         stage('Install Dependencies') {
-             steps {
-                 sh "cd Application && npm install"
-             }
-         }
+        //         sh 'trivy image myapp:latest'
+        //     }
+        // }
 
-
+        // stage('Run on EC2') {
+        //     steps {
+        //         sh 'docker run -d -p 80:3000 myapp:latest'
+        //     }
+        // }
     }
 }
-
-
-

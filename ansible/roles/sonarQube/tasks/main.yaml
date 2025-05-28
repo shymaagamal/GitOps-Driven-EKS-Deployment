@@ -1,3 +1,4 @@
+---
 
     - name: Update apt cache
       apt:
@@ -15,9 +16,8 @@
           - lsb-release
           - unzip
           - software-properties-common
-          - ncdu
-          - openjdk-17-jdk  # Ensure Java for Jenkins
         state: present
+        update_cache: true
       when: ansible_os_family == "Debian"
 
     - name: Install Node.js and npm
@@ -28,30 +28,6 @@
         state: present
       when: ansible_os_family == "Debian"
 
-    - name: Ensure pip3 is installed
-      apt:
-        name: python3-pip
-        state: present
-      when: ansible_os_family == "Debian"
-
-    - name: Ensure Docker SDK for Python is installed
-      pip:
-        name: docker
-        executable: pip3
-
-    - name: Install Jenkins
-      apt:
-        name: jenkins
-        state: present
-      when: ansible_os_family == "Debian"
-
-    - name: Start and enable Jenkins service
-      service:
-        name: jenkins
-        state: started
-        enabled: yes
-      when: ansible_os_family == "Debian"
-
     - name: Add Docker GPG key
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
@@ -59,9 +35,17 @@
 
     - name: Add Docker repository
       apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
         state: present
 
+    - name: Ensure pip3 is installed on ubuntu
+      apt: 
+        name: python3-pip
+        state: present   
+    - name: Ensure Docker SDK for Python is installed
+      pip:
+        name: docker
+        executable: pip3
     - name: Install Docker
       apt:
         name:
@@ -76,35 +60,18 @@
         state: started
         enabled: yes
 
-    - name: Add user to docker group
-      user:
-        name: "{{ ansible_user }}"
-        groups: docker
-        append: yes
+   
+
+    # - name: Add user to docker group
+    #   user:
+    #     name: "{{ ansible_user }}"
+    #     groups: docker
+    #     append: yes
 
     - name: Create Docker network
       docker_network:
         name: "{{ docker_network }}"
         state: present
-
-    - name: Install Trivy
-      shell: |
-        curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
-      args:
-        creates: /usr/local/bin/trivy
-      when: ansible_os_family == "Debian"
-
-    - name: Clean npm cache
-      command: npm cache clean --force
-      changed_when: false
-
-    - name: Clean unused Docker images and volumes
-      command: docker system prune -a --volumes --force
-      changed_when: false
-
-    - name: Clear temporary files
-      command: rm -rf /tmp/*
-      changed_when: false
 
     - name: Run PostgreSQL container for SonarQube
       docker_container:
@@ -151,34 +118,3 @@
         path: "{{ project_dir }}"
         state: directory
         mode: '0755'
-
-    - name: Configure sonar-project.properties
-      copy:
-        dest: "{{ project_dir }}/sonar-project.properties"
-        content: |
-          sonar.projectKey=my-node-app
-          sonar.projectName=Node App
-          sonar.sources=Application
-          sonar.exclusions=node_modules/**,dist/**
-          sonar.host.url=http://44.199.248.237:9000
-          {% if sonar_token %}
-          sonar.token={{ sonar_token }}
-          {% endif %}
-          sonar.language=js
-        mode: '0644'
-
-    - name: Ensure Jenkins directory permissions
-      file:
-        path: /var/lib/jenkins
-        owner: jenkins
-        group: jenkins
-        recurse: yes
-      when: ansible_os_family == "Debian"
-
-    - name: Create cron job for daily cleanup
-      cron:
-        name: "Daily disk cleanup"
-        minute: "0"
-        hour: "2"
-        job: "/usr/bin/docker system prune -a --volumes --force && /usr/bin/npm cache clean --force && rm -rf /tmp/*"
-      when: ansible_os_family == "Debian"
