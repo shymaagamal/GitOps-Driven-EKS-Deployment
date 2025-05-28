@@ -20,13 +20,6 @@
         update_cache: true
       when: ansible_os_family == "Debian"
 
-    - name: Install Node.js and npm
-      apt:
-        name:
-          - nodejs
-          - npm
-        state: present
-      when: ansible_os_family == "Debian"
 
     - name: Add Docker GPG key
       apt_key:
