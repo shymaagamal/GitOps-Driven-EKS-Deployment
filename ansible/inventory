@@ -1,8 +1,8 @@
 [jenkins-master]
-34.201.17.255
+35.169.124.162
 
 
 
 [sonarQube]
-34.201.17.255  ansible_user=ubuntu
+35.169.124.162  ansible_user=ubuntu
 
