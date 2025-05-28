@@ -9,9 +9,7 @@ module "mycompute" {
     source = "./compute"
     instance_type_m = var.instance_type
     PublicSubnet_id_m= module.mynetwork.PublicSubnet_id
-    PrivateSubnet_id_m= module.mynetwork.PrivateSubnet_id
     master_sg_m= module.mynetwork.master_sg
-    slave_sg_m= module.mynetwork.slave_sg
 }
 
 module "eks" {

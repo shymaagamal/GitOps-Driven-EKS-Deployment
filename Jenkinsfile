@@ -5,7 +5,7 @@ pipeline{
         nodejs 'node16'
     }
     environment{
-        SCANNER_HOME=toll 'sonarqube-scanner'
+        SCANNER_HOME=tool 'sonarqube-scanner'
     }
     stages{
         stage('create workspace'){

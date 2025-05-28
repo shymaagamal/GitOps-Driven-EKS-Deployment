@@ -1,6 +1,6 @@
 vpc_cidr = "10.10.0.0/16"
 region = "us-east-1"
-instance_type = "t2.medium"
+instance_type = "t3.large"
 subnets = [
 {
     cidr_block = "10.10.1.0/24"

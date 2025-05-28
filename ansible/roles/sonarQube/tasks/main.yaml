@@ -37,6 +37,10 @@
       apt_repository:
         repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
         state: present
+    - name: Ensure pip3 is installed on ubuntu
+      apt: 
+        name: python3-pip
+        state: present   
     - name: Ensure Docker SDK for Python is installed
       pip:
         name: docker
@@ -54,10 +58,7 @@
         name: docker
         state: started
         enabled: yes
-    - name: Ensure pip3 is installed on ubuntu
-      apt: 
-        name: python3-pip
-        state: present
+
    
 
     - name: Add user to docker group

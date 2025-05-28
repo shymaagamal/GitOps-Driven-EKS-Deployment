@@ -31,6 +31,14 @@ sonaegates
 
 [SonarQube](https://docs.sonarsource.com/sonarqube-server/10.4/setup-and-upgrade/install-the-server/introduction/)
 
+## Running Play books
+after run sonarQube.yaml 
+run this command 
+``` bash
+echo 'vm.max_map_count=262144' | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+```
+```Insufficient Virtual Memory (vm.max_map_count): Elasticsearch requires this setting to be at least 262144. You can set it using:```
 
 
 # PLugins
@@ -72,7 +80,7 @@ Docker   installation
 ##  SOnarQube COnfig
 Pass -> St123456789@
 
-tokens->>  squ_ebc7d90ce3563c665081bc63081de715f3e8bbb9
+tokens->>  squ_ddad47f3a1a1f37bb63a5f72e635c550aaab11e6
 
 - administration 
 - security 
