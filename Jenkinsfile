@@ -44,7 +44,17 @@ pipeline {
                 sh 'trivy image myapp:latest'
             }
         }
-
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker tag myapp:latest $DOCKER_USER/myapp:latest
+                        docker push $DOCKER_USER/myapp:latest
+                    '''
+                }
+            }
+        }
 
     }
 }

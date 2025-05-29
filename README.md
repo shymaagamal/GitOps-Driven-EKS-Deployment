@@ -141,7 +141,49 @@ Example: http://172.31.22.150:9000
         - Secret: Paste the generated SonarQube token
         - ID: Give it a name (e.g., sonar-token)
 
+### SonarQube Architecture Diagram
+         +-------------------------+
+         |      Developer          |
+         |  (Code Commit & Push)   |
+         +-----------+-------------+
+                     |
+                     v
+         +-----------+-------------+
+         |         Jenkins          |
+         |  (CI/CD Pipeline Runner) |
+         +-----------+-------------+
+                     |
+     +---------------+----------------+
+     | SonarQube Scanner (plugin/tool)|
+     +---------------+----------------+
+                     |
+         +-----------v-------------+
+         |     SonarQube Server    |    <== Running on EC2
+         |-------------------------|
+         |  Web UI (port 9000)     |
+         |  Compute Engine         |
+         |  Elasticsearch Engine   |
+         |  PostgreSQL DB          |
+         +-----------+-------------+
+                     |
+        +------------v------------+
+        |     PostgreSQL DB       |
+        | Stores analysis results |
+        | Store SonarQube tokens  |
+        | Store Users or groups   |
+        +-------------------------+
+![](./images/sonarqube.png)
 
+#### Add Docker Hub Credentials in Jenkins
+- Go to Jenkins → Manage Jenkins → Credentials
+- Choose (global) scope or the relevant one
+- Click Add Credentials
+    - Kind: Username with password
+    - Username: your Docker Hub username
+    - Password:  Docker Hub access token
+    - ID: e.g. docker-hub-creds
+
+- Use this ID (docker-hub-creds) in the pipeline.
 #### References
 - [sonarqube-setup](https://maazmohd313.hashnode.dev/sonarqube-setup-for-attaining-the-code-quality-of-project-using-docker-compose)
 
