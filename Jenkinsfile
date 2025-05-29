@@ -38,6 +38,7 @@ pipeline {
                     waitForQualityGate abortPipeline: true
                 }
             }
+        }
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t myapp:latest -f Dockerfile/dockerfile .'
