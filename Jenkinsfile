@@ -36,7 +36,7 @@ pipeline {
                 dir('Application') {
 
                 withSonarQubeEnv('sonarQube-Server') {
-                    sh 'sonar-scanner -X'
+                    sh 'sonar-scanner -X -Dsonar.verbose=true'
                 }
             }
             }
