@@ -3,7 +3,7 @@
 ## 🚀 Overview
 
 This project demonstrates a complete CI/CD pipeline setup on AWS using **Terraform**, **Jenkins**, **SonarQube**, **Trivy**, **DockerHub**, and **ArgoCD**. The infrastructure is provisioned using Infrastructure as Code (IaC) with **Terraform**, while continuous integration and deployment are handled by Jenkins and ArgoCD respectively. The pipeline includes static code analysis, container image scanning, Docker image creation, and deployment to an EKS cluster using GitOps.
----
+
 
 ## 🧱 Architecture Diagram
 ![](./images/diagram.png)
