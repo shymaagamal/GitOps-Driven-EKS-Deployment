@@ -35,7 +35,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t myapp:latest Dockerfile/'
+                sh 'docker build -t myapp:latest Dockerfile/dockerfile .'
             }
         }
 
