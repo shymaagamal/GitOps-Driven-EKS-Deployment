@@ -33,9 +33,12 @@ pipeline {
                 }
         stage('SonarQube Analysis') {
             steps {
+                dir('Application') {
+
                 withSonarQubeEnv('sonarQube-Server') {
                     sh 'sonar-scanner'
                 }
+            }
             }
         }
         stage('Quality Gate') {
