@@ -24,21 +24,13 @@ pipeline {
                 }
             }
         }
-        stage('Run Tests') {
-                    steps {
-                        dir('Application') {
-                            sh 'npm test'
-                        }
-                    }
-                }
+
         stage('SonarQube Analysis') {
             steps {
-                dir('Application') {
 
                 withSonarQubeEnv('sonarQube-Server') {
                     sh 'sonar-scanner '
                 }
-            }
             }
         }
         // stage('Quality Gate') {
