@@ -24,7 +24,13 @@ pipeline {
                 }
             }
         }
-
+        stage('Run Tests') {
+                    steps {
+                        dir('Application') {
+                            sh 'npm test'
+                        }
+                    }
+                }
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonarQube-Server') {
