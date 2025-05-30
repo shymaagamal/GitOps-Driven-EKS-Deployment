@@ -15,9 +15,7 @@ spec:
     spec:
       containers:
         - name: nodejs-app
-          image: 192636115768.dkr.ecr.us-east-1.amazonaws.com/ecr_repository:latest
+          image: node:18-alpine 
           ports:
             - containerPort: 3000
-          envFrom:
-            - secretRef:
-                name: db-credentials
+          
