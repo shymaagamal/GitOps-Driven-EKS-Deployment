@@ -6,7 +6,7 @@ resource "aws_eks_node_group" "eks_node_group" {
 
   capacity_type = "ON_DEMAND"
   ami_type       = "AL2_x86_64"         
-  instance_types = ["t3.medium"]
+  instance_types = ["t2.medium"]
   disk_size = 20
   scaling_config {
     desired_size = 2

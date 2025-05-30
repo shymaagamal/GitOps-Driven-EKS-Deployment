@@ -14,3 +14,7 @@ output master_sg {
   value       = aws_security_group.master_sg.id
 }
 
+output "networkOUT_SG_for_rds_id" {
+  value = aws_security_group.network_SG_for_rds.id
+  description = "id of sg for rds"
+}

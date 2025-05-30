@@ -184,6 +184,9 @@ Example: http://172.31.22.150:9000
     - ID: e.g. docker-hub-creds
 
 - Use this ID (docker-hub-creds) in the pipeline.
+
+### Setup for trivy
+
 #### References
 - [sonarqube-setup](https://maazmohd313.hashnode.dev/sonarqube-setup-for-attaining-the-code-quality-of-project-using-docker-compose)
 
