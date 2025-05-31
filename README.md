@@ -18,14 +18,30 @@ This project provisions a cloud infrastructure on AWS using Terraform, including
 
 ---
 
-## ✅ Requirements
+# Amazon EKS Cluster Setup Guide
 
-- Terraform v1.3+
-- AWS CLI configured (`aws configure`)
-- AWS account with required IAM permissions
-- S3 bucket for remote backend 
+This guide walks you through configuring your environment to connect to an Amazon EKS cluster.
 
 ---
+
+## Prerequisites
+
+- AWS CLI installed and configured
+- Install kubectl
+
+## Connect kubectl to an EKS
+
+Create or update a kubeconfig file for your cluster.
+
+```bash
+aws eks update-kubeconfig --region us-east-1 --name eks_my_cluster
+```
+
+Test your configuration
+
+```bash
+kubectl get svc
+```
 
 ### Jenkins CI Pipeline:
 - Pulls code from GitHub.

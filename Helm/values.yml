@@ -1,0 +1,17 @@
+fullnameOverride: argocd-image-updater
+
+config:
+  logLevel: debug
+  registries:
+    - name: DockerHub
+      api_url: https://index.docker.io/v1/
+      prefix: docker.io
+      ping: yes
+      credentials: secret:dockerhub-creds
+
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+  name: argocd-image-update
