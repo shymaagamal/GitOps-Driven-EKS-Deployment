@@ -7,7 +7,7 @@ This project demonstrates a complete CI/CD pipeline setup on AWS using **Terrafo
 ## 🧱 Architecture Diagram
 ![](./images/diagram.png)
 
-# Terraform CI/CD Infrastructure on AWS
+### Terraform CI/CD Infrastructure on AWS
 
 This project provisions a cloud infrastructure on AWS using Terraform, including:
 
@@ -18,18 +18,18 @@ This project provisions a cloud infrastructure on AWS using Terraform, including
 
 ---
 
-# Amazon EKS Cluster Setup Guide
+### Amazon EKS Cluster Setup Guide
 
 This guide walks you through configuring your environment to connect to an Amazon EKS cluster.
 
 ---
 
-## Prerequisites
+### Prerequisites
 
 - AWS CLI installed and configured
 - Install kubectl
 
-## Connect kubectl to an EKS
+### Connect kubectl to an EKS
 
 Create or update a kubeconfig file for your cluster.
 
@@ -45,14 +45,17 @@ kubectl get svc
 
 ### Jenkins CI Pipeline:
 - Pulls code from GitHub.
+- Installs Node.js dependencies (npm install)
 - Analyzes code quality with SonarQube.
-- Builds Docker image.
-- Scans image vulnerabilities using Trivy.
-- Pushes secure image to DockerHub.
+- Builds a Docker image tagged with the Jenkins build number
+- Scans the Docker image for vulnerabilities using Trivy
+- Pushes the scanned, secure image to DockerHub 
 
-### ArgoCD GitOps (CD):
-- Deployed in the EKS cluster using Helm.
-- Syncs with the GitHub repo to deploy the application automatically to Kubernetes.
+### ArgoCD GitOps (CD) Pipeline:
+- ArgoCD continuously syncs Kubernetes manifests from the GitHub repo
+- Automatically deploys application updates to the cluster
+- ArgoCD Image Updater monitors DockerHub for new image tags
+- When a new image version is available, it updates the manifests and triggers ArgoCD to deploy the new version automatically
 
 # 🚀 Steps I Followed
 

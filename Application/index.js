@@ -8,7 +8,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Handle 404 for non-existent routes
 app.use((req, res) => {
-  res.status(404).send('404: Page not found');
+  res.status(404).send('404: this page is not found');
 });
 
 app.listen(PORT, () => {
