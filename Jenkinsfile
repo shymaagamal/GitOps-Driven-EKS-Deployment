@@ -46,7 +46,7 @@ pipeline {
         stage('Trivy Scan') {
             steps {
                 echo "Scanning image with tag: ${IMAGE_TAG}"
-                sh 'trivy image myapp:${IMAGE_TAG}'
+                sh 'trivy image shaimaagsalem/myapp:${IMAGE_TAG}'
             }
         }
         stage('Push Docker Image') {
