@@ -46,9 +46,10 @@ kubectl get svc
 - ArgoCD Image Updater monitors DockerHub for new image tags
 - When a new image version is available, it updates the manifests and triggers ArgoCD to deploy the new version automatically
 
-# 🚀 Steps I Followed
+# 🚀 Steps I Followed 
+# Continuous Integration (CI)  Setup
 
-## 🔧 Jenkins Setup (on EC2 in Public Subnet)
+### 🔧 Jenkins Setup (on EC2 in Public Subnet)
 The Jenkins master node is hosted on an Amazon EC2 instance within the public subnet. This instance is configured to serve as the core CI engine for the pipeline.
 ### ✅ Installed Jenkins Plugins
 To enable CI features such as code analysis, Docker builds, and pipeline automation, the following Jenkins plugins were installed:
@@ -103,7 +104,7 @@ curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 # Install Node.js
 sudo apt install -y nodejs
 ```
-#### 📊 SonarQube Configuration in Jenkins
+### 📊 SonarQube Configuration in Jenkins
 
 To integrate SonarQube Server with Jenkins for static code analysis, follow these steps:
 
@@ -218,7 +219,7 @@ To integrate **Trivy** into the pipeline, use the scripts under the [`scripts`](
 - Use this ID (docker-hub-creds) in the pipeline.
 
 
-### 🚀 CI/CD Pipeline Output
+# 🚀 CI Pipeline Output
 👉 Here’s a visual confirmation of a successful Jenkins pipeline execution and SonarQube quality gate pass:
 - 🟢 SonarQube Quality Gate Passed
 
@@ -231,7 +232,7 @@ To integrate **Trivy** into the pipeline, use the scripts under the [`scripts`](
 
 ## 🧩 Build Pipeline Issues & Solutions
 ### 💾 Disk Space Issue and Solution
-During the CI/CD process, Jenkins builds (especially Docker builds and scans) may consume significant disk space.
+During the CI process, Jenkins builds (especially Docker builds and scans) may consume significant disk space.
 
 Initially, the EC2 instance (t2.large with 8GB root volume) ran out of space, causing the pipeline to fail with the following error:
 
@@ -260,6 +261,8 @@ sudo growpart /dev/nvme0n1 1
 # Resize the filesystem
 sudo resize2fs /dev/nvme0n1p1
 ```
+
+
 
 
 #### References
