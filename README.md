@@ -23,41 +23,9 @@ This project provisions a cloud infrastructure on AWS using Terraform, including
 - Terraform v1.3+
 - AWS CLI configured (`aws configure`)
 - AWS account with required IAM permissions
-- S3 bucket for remote backend (`shaimaasalem-terraform-state-bucket`)
+- S3 bucket for remote backend 
 
 ---
-
-## 🚀 Deployment Steps
-
-1. **Initialize Terraform**  
-
-```bash
-terraform init
-```
-
-2. **Validate the Configuration**  
-
-```bash
-terraform validate
-```
-
-3. **Plan the Deployment**  
-
-```bash
-terraform plan
-```
-
-4. **Apply the Infrastructure**  
-
-```bash
-terraform apply
-```
-
-## Cleanup
-
-```bash
-terraform destroy
-```
 
 ### Jenkins CI Pipeline:
 - Pulls code from GitHub.

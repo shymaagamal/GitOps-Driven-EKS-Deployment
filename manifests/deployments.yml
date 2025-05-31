@@ -20,3 +20,5 @@ spec:
         image: shaimaagsalem/myapp:latest 
         ports:
         - containerPort: 80  
+
+
