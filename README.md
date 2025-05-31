@@ -4,9 +4,60 @@
 
 This project demonstrates a complete CI/CD pipeline setup on AWS using **Terraform**, **Jenkins**, **SonarQube**, **Trivy**, **DockerHub**, and **ArgoCD**. The infrastructure is provisioned using Infrastructure as Code (IaC) with **Terraform**, while continuous integration and deployment are handled by Jenkins and ArgoCD respectively. The pipeline includes static code analysis, container image scanning, Docker image creation, and deployment to an EKS cluster using GitOps.
 
-
 ## 🧱 Architecture Diagram
 ![](./images/diagram.png)
+
+# Terraform CI/CD Infrastructure on AWS
+
+This project provisions a cloud infrastructure on AWS using Terraform, including:
+
+- **Networking**: VPC with public and private subnets
+- **Compute**: EC2 instance with SSH key pair
+- **Container Orchestration**: Amazon EKS cluster with worker node group
+- **Remote State Management**: S3 backend with state locking
+
+---
+
+## ✅ Requirements
+
+- Terraform v1.3+
+- AWS CLI configured (`aws configure`)
+- AWS account with required IAM permissions
+- S3 bucket for remote backend (`shaimaasalem-terraform-state-bucket`)
+
+---
+
+## 🚀 Deployment Steps
+
+1. **Initialize Terraform**  
+
+```bash
+terraform init
+```
+
+2. **Validate the Configuration**  
+
+```bash
+terraform validate
+```
+
+3. **Plan the Deployment**  
+
+```bash
+terraform plan
+```
+
+4. **Apply the Infrastructure**  
+
+```bash
+terraform apply
+```
+
+## Cleanup
+
+```bash
+terraform destroy
+```
 
 ### Jenkins CI Pipeline:
 - Pulls code from GitHub.
