@@ -35,7 +35,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t myapp:latest -f Dockerfile/dockerfile .'
+                sh 'docker build -t shaimaagsalem/myapp:latest -f Dockerfile/dockerfile .'
             }
         }
 
@@ -49,7 +49,6 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh '''
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        # docker tag myapp:latest $DOCKER_USER/myapp:latest
                         docker push $DOCKER_USER/myapp:latest
                     '''
                 }
