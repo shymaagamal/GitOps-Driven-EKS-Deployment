@@ -1,7 +1,7 @@
 resources:
-  - deployment.yaml
-  - namespace.yml
-  - lb_argocd_image_updator.yml
+  - deployments.yaml
+  - namespace.yaml
+  - lb_argocd_image_updator.yaml
 
 images:
   - name: shaimaagsalem/myapp
