@@ -174,6 +174,11 @@ Example: http://172.31.22.150:9000
         +-------------------------+
 ![](./images/sonarqube.png)
 
+### 🔍 Setup for Trivy
+To integrate **Trivy** into the pipeline, use the scripts under the [`scripts`](./scripts/) folder:
+- All related installation and configuration scripts for Trivy are located under the `scripts folder`
+- `install_trivy.sh` – Installs Trivy
+
 #### Add Docker Hub Credentials in Jenkins
 - Go to Jenkins → Manage Jenkins → Credentials
 - Choose (global) scope or the relevant one
@@ -185,7 +190,56 @@ Example: http://172.31.22.150:9000
 
 - Use this ID (docker-hub-creds) in the pipeline.
 
-### Setup for trivy
+
+### 🚀 CI/CD Pipeline Output
+👉 Here’s a visual confirmation of a successful Jenkins pipeline execution and SonarQube quality gate pass:
+- 🟢 SonarQube Quality Gate Passed
+
+![](./images/sonarSuccess.png)
+
+- 🛠️ Jenkins Pipeline Execution
+
+![](./images/pipeline.png)
+
+
+## 🧩 Build Pipeline Issues & Solutions
+### 💾 Disk Space Issue and Solution
+During the CI/CD process, Jenkins builds (especially Docker builds and scans) may consume significant disk space.
+
+Initially, the EC2 instance (t2.large with 8GB root volume) ran out of space, causing the pipeline to fail with the following error:
+
+> ❌ Error: No space left on device
+
+### 🛠️ How I Resolved It
+To overcome this, I increased the EBS volume attached to the EC2 instance from the AWS Console and extended the partition on the instance.
+
+#### ✅ Steps to Increase EC2 Disk Space
+- Increase EBS Volume Size:
+    - Go to AWS Console → EC2 → Volumes.
+    - Select your volume attached to the EC2 instance.
+    - Click Actions → Modify Volume.
+    - Increase the size (e.g., from 8 GB to 30 GB).
+    - Resize the Volume on EC2 Instance:
+
+- Run the following commands on your EC2 instance to resize the volume:
+
+```bash
+# Check existing partitions
+lsblk
+
+# Grow the partition to use the additional space
+sudo growpart /dev/nvme0n1 1
+
+# Resize the filesystem
+sudo resize2fs /dev/nvme0n1p1
+```
+
+
+
+
+
+
+
 
 #### References
 - [sonarqube-setup](https://maazmohd313.hashnode.dev/sonarqube-setup-for-attaining-the-code-quality-of-project-using-docker-compose)
