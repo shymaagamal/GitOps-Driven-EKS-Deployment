@@ -4,7 +4,7 @@ pipeline {
         nodejs 'node20' 
     }
     environment {
-        IMAGE_TAG = "1.0.${BUILD_NUMBER}"
+        IMAGE_TAG = "v1.0.${BUILD_NUMBER}"
     }
     stages {
         stage('Checkout') {
