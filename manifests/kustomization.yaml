@@ -1,0 +1,8 @@
+resources:
+  - deployment.yaml
+  - namespace.yml
+  - lb_argocd_image_updator.yml
+
+images:
+  - name: shaimaagsalem/myapp
+    newTag: latest
