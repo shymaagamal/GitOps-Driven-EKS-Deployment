@@ -3,6 +3,9 @@ pipeline {
     tools {
         nodejs 'node20' 
     }
+    environment {
+        IMAGE_TAG = "1.0.${BUILD_NUMBER}"
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -35,13 +38,15 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t shaimaagsalem/myapp:latest -f Dockerfile/dockerfile .'
+                echo "Using image tag: ${IMAGE_TAG}"
+                sh 'docker build -t shaimaagsalem/myapp:${IMAGE_TAG} -f Dockerfile/dockerfile .'
             }
         }
 
         stage('Trivy Scan') {
             steps {
-                sh 'trivy image myapp:latest'
+                echo "Scanning image with tag: ${IMAGE_TAG}"
+                sh 'trivy image myapp:${IMAGE_TAG}'
             }
         }
         stage('Push Docker Image') {
@@ -49,7 +54,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh '''
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker push $DOCKER_USER/myapp:latest
+                        docker push $DOCKER_USER/myapp:${IMAGE_TAG}
                     '''
                 }
             }
