@@ -2,6 +2,7 @@
 
 ----> showing the ArgoCD UI deploying our app 
 (image)
+
 🤖 ArgoCD Image Updater Setup
  1. Create a values.yaml File
 u can finde it under HELM/values.yaml

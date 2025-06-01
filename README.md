@@ -2,21 +2,11 @@
 
 ## 🚀 Overview
 
-This project demonstrates a complete CI/CD pipeline setup on AWS using **Terraform**, **Jenkins**, **SonarQube**, **Trivy**, **DockerHub**, and **ArgoCD**. The infrastructure is provisioned using Infrastructure as Code (IaC) with **Terraform**, while continuous integration and deployment are handled by Jenkins and ArgoCD respectively. The pipeline includes static code analysis, container image scanning, Docker image creation, and deployment to an EKS cluster using GitOps.
+This project demonstrates a complete CI/CD pipeline setup on AWS using **Terraform**, **Jenkins**, **SonarQube**, **Trivy**, **DockerHub**, **ArgoCD**, **ArgoCD image Updator**, **Prometheus**, and **Grafana**. . The infrastructure is provisioned using Infrastructure as Code (IaC) with **Terraform**, while continuous integration and deployment are handled by Jenkins and ArgoCD respectively. The pipeline includes static code analysis, container image scanning, Docker image creation, and deployment to an EKS cluster using GitOps, , with system and application monitoring powered by Prometheus and Grafana.
 
 ## 🧱 Architecture Diagram
 ![](./images/diagram.png)
 
-### Terraform CI/CD Infrastructure on AWS
-
-This project provisions a cloud infrastructure on AWS using Terraform, including:
-
-- **Networking**: VPC with public and private subnets
-- **Compute**: EC2 instance with SSH key pair
-- **Container Orchestration**: Amazon EKS cluster with worker node group
-- **Remote State Management**: S3 backend with state locking
-
----
 
 ### Amazon EKS Cluster Setup Guide
 
@@ -273,6 +263,114 @@ sudo growpart /dev/nvme0n1 1
 sudo resize2fs /dev/nvme0n1p1
 ```
 
+# 🚀 Continuous Delivery (CD) Setup
+
+## 📦 ArgoCD Installation Using Helm
+
+To enable GitOps-based continuous delivery, we use **ArgoCD**—a declarative GitOps tool for Kubernetes.
+
+### ✅ Installation Steps
+
+```bash
+# 1. **Add the ArgoCD Helm repository**
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+
+# 2. **Create a dedicated namespace for ArgoCD**
+kubectl create namespace argocd
+
+# 3. **Install ArgoCD using Helm**
+helm install argocd argo/argo-cd --namespace argocd
+
+# 4. **Forward the ArgoCD API server port to your local machine**
+kubectl port-forward service/argocd-server -n argocd 8080:443
+``` 
+
+**Then access the UI at**: https://localhost:8080\
+**Default username**: admin\
+**Password**: You can retrieve it using:
+```bash
+kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64
+```
+
+## 🚀 Application Deployment via ArgoCD UI
+![](./images/argocd_config.jpeg)
+
+
+## 🤖 ArgoCD Image Updater 
+
+The ArgoCD Image Updater automates the process of updating container image tags in your GitOps-managed applications. It continuously monitors DockerHub (or other registries) and modifies the manifests in your Git repository to trigger seamless deployments via ArgoCD.
+
+### 1. Create a values.yaml 
+
+You can find it under: HELM/values.yaml
+
+| 🔑 Key                  | 📄 Description                                                  |
+| ----------------------- | --------------------------------------------------------------- |
+| `fullnameOverride`      | Sets a consistent name for Helm release and resources.          |
+| `config.logLevel`       | Enables debug logging for development and troubleshooting.      |
+| `config.registries`     | Defines DockerHub as the monitored container registry.          |
+| `credentials`           | Specifies the name of the DockerHub secret (`dockerhub-creds`). |
+| `rbac.create`           | Creates the necessary RBAC roles and bindings.                  |
+| `serviceAccount.create` | Creates a dedicated service account for the updater.            |
+| `serviceAccount.name`   | Explicitly names the service account `argocd-image-updater`.    |
+
+### 📦 2. Install ArgoCD Image Updater via Helm
+Install the Image Updater in the same namespace as ArgoCD:
+
+```bash
+helm install argocd-image-updater argo/argocd-image-updater \
+  --namespace argocd \
+  -f HELM/values.yaml
+```
+
+### 🖥️ 3. Add Annotations in ArgoCD UI
+**Click on the App → App Details → Edit**
+
+![](./images/annotations.jpeg)
+
+### 🧩 4. GitOps Integration – kustomization.yaml
+The ArgoCD Image Updater updates image tags by modifying your Git repository’s kustomization.yaml file.\
+**First add**: manifests/kustomization.yaml\
+**Second add**: add Kustimize:{} attribute in mainfest
+
+![](./images/Kustimize.jpeg)
+
+
+
+### 🔐 4. Create DockerHub Secret
+To allow ArgoCD Image Updater to authenticate with DockerHub and track image updates:
+
+```bash
+kubectl create secret docker-registry dockerhub-creds \
+  --docker-server=https://index.docker.io/v1/ \
+  --docker-username=your_dockerhub_username \
+  --docker-password=your_actual_docker_pat \
+  --namespace=argocd
+```
+
+### ✅ 4. Verify the Secret
+
+```bash
+kubectl get secret dockerhub-creds --namespace=argocd
+```
+
+# 🚀 CD Pipeline Output
+👉 This section demonstrates a successful deployment managed by ArgoCD and ArgoCD Image Updater.
+
+📸 Visual Confirmation from the ArgoCD Dashboard
+![](./images/argo.jpeg)
+
+📜 Live Logs from Image Updater
+```bash
+kubectl logs -n argocd deployment/argocd-image-updater -f
+```
+![](./images/logs.jpeg)
+
+
+
+
+
 
 
 #### References
@@ -281,3 +379,10 @@ sudo resize2fs /dev/nvme0n1p1
 - [Generating and using tokens for sonarQube](https://docs.sonarsource.com/sonarqube-server/8.9/user-guide/user-account/generating-and-using-tokens/)
 
 - [Configuring project in sonar-project.properties file](https://docs.sonarsource.com/sonarqube-server/9.9/analyzing-source-code/scanners/sonarscanner/)
+
+- []()
+
+- []()
+
+- []()
+
