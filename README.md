@@ -387,9 +387,8 @@ kubectl logs -n argocd deployment/argocd-image-updater -f
 
 - [Configuring project in sonar-project.properties file](https://docs.sonarsource.com/sonarqube-server/9.9/analyzing-source-code/scanners/sonarscanner/)
 
-- []()
+- [Install ArgoCD](https://argocd-image-updater.readthedocs.io/en/stable/install/installation/)
 
-- []()
+- [Configuring ArgoCD to enable monitoring in prometheus and grafana](https://pete8s.medium.com/installing-prometheus-on-kubernetes-with-argocd-a4e99580543d)
 
-- []()
 
