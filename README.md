@@ -286,12 +286,7 @@ helm install argocd argo/argo-cd --namespace argocd
 kubectl port-forward service/argocd-server -n argocd 8080:443
 ``` 
 
-**Then access the UI at**: https://localhost:8080\
-**Default username**: admin\
-**Password**: You can retrieve it using:
-```bash
-kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64
-```
+**Then access the UI at**: https://localhost:8080
 
 ## 🚀 Application Deployment via ArgoCD UI
 ![](./images/argocd_config.jpeg)
@@ -303,17 +298,8 @@ The ArgoCD Image Updater automates the process of updating container image tags 
 
 ### 1. Create a values.yaml 
 
-You can find it under: HELM/values.yaml
+You can find it under: Helm/values.yaml
 
-| 🔑 Key                  | 📄 Description                                                  |
-| ----------------------- | --------------------------------------------------------------- |
-| `fullnameOverride`      | Sets a consistent name for Helm release and resources.          |
-| `config.logLevel`       | Enables debug logging for development and troubleshooting.      |
-| `config.registries`     | Defines DockerHub as the monitored container registry.          |
-| `credentials`           | Specifies the name of the DockerHub secret (`dockerhub-creds`). |
-| `rbac.create`           | Creates the necessary RBAC roles and bindings.                  |
-| `serviceAccount.create` | Creates a dedicated service account for the updater.            |
-| `serviceAccount.name`   | Explicitly names the service account `argocd-image-updater`.    |
 
 ### 📦 2. Install ArgoCD Image Updater via Helm
 Install the Image Updater in the same namespace as ArgoCD:
@@ -321,22 +307,12 @@ Install the Image Updater in the same namespace as ArgoCD:
 ```bash
 helm install argocd-image-updater argo/argocd-image-updater \
   --namespace argocd \
-  -f HELM/values.yaml
+  -f Helm/values.yml
 ```
 
-### 🖥️ 3. Add Annotations in ArgoCD UI
-**Click on the App → App Details → Edit**
-
-![](./images/annotations.jpeg)
-
-### 🧩 4. GitOps Integration – kustomization.yaml
+### 🧩 3. GitOps Integration – kustomization.yaml
 The ArgoCD Image Updater updates image tags by modifying your Git repository’s kustomization.yaml file.\
-**First add**: manifests/kustomization.yaml\
-**Second add**: add Kustimize:{} attribute in mainfest
-
-![](./images/Kustimize.jpeg)
-
-
+**Add**: manifests/kustomization.yaml\
 
 ### 🔐 4. Create DockerHub Secret
 To allow ArgoCD Image Updater to authenticate with DockerHub and track image updates:
@@ -347,13 +323,50 @@ kubectl create secret docker-registry dockerhub-creds \
   --docker-username=your_dockerhub_username \
   --docker-password=your_actual_docker_pat \
   --namespace=argocd
-```
 
-### ✅ 4. Verify the Secret
-
-```bash
+# Verify the Secret
 kubectl get secret dockerhub-creds --namespace=argocd
 ```
+
+### 🖥️ 5. Add Annotations in ArgoCD UI
+**Click on the App → App Details → Edit**
+
+![](./images/annotations.jpeg)
+
+## prometheus
+connect Argo CD and Argo CD Image Updater to Prometheus and Grafana, using Prometheus Operator.
+
+### Install Prometheus + Grafana (Prometheus Operator)
+```bash
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+helm install monitoring prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
+```
+
+### Install Argo CD with monitoring enabled
+📄 update values.yml
+```bash
+helm upgrade argocd argo/argo-cd -n argocd -f values.yml
+```
+
+### Check Prometheus Metrics
+```bash
+kubectl port-forward svc/monitoring-kube-prometheus-prometheus -n monitoring 9090
+```
+
+### Open Grafana & View Dashboards
+```bash
+kubectl port-forward svc/monitoring-grafana -n monitoring 3000:80
+```
+
+### In grafana add data source:  Prometheus
+**Grafana >> Connections >> Data sources >> Prometheus >> Add HTTP URL**
+![](./images/DataSource.jpeg)
+
+### Import Dashboards
+import the Kubernetes cluster monitoring dashboard by entering its dashboard ID (315) or JSON file.
+
+![](./images/Metrics.jpeg)
 
 # 🚀 CD Pipeline Output
 👉 This section demonstrates a successful deployment managed by ArgoCD and ArgoCD Image Updater.
@@ -361,17 +374,11 @@ kubectl get secret dockerhub-creds --namespace=argocd
 📸 Visual Confirmation from the ArgoCD Dashboard
 ![](./images/argo.jpeg)
 
-📜 Live Logs from Image Updater
+📜 Live Logs from Image Updater After complete CICD pipeline
 ```bash
 kubectl logs -n argocd deployment/argocd-image-updater -f
 ```
 ![](./images/logs.jpeg)
-
-
-
-
-
-
 
 #### References
 - [sonarqube-setup](https://maazmohd313.hashnode.dev/sonarqube-setup-for-attaining-the-code-quality-of-project-using-docker-compose)

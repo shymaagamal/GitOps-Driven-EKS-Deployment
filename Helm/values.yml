@@ -1,7 +1,7 @@
-fullnameOverride: argocd-image-updater
-
 config:
-  logLevel: debug
+  logLevel: debug  
+
+
   registries:
     - name: DockerHub
       api_url: https://index.docker.io/v1/
@@ -15,3 +15,42 @@ rbac:
 serviceAccount:
   create: true
   name: argocd-image-update
+
+imageUpdater:
+  enabled: true
+
+# Update values.yml to make monitoring
+server:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      namespace: monitoring
+      additionalLabels:
+        release: monitoring
+
+controller:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      namespace: monitoring
+      additionalLabels:
+        release: monitoring
+
+repoServer:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      namespace: monitoring
+      additionalLabels:
+        release: monitoring
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    namespace: monitoring
+    additionalLabels:
+      release: monitoring

@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: argocd-image-updater-server
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-server-metrics
+      app.kubernetes.io/component: server
+  namespaceSelector:
+    matchNames:
+    - argocd
+  endpoints:
+  - port: metrics       # <-- use the port name, not number
+    interval: 30s
